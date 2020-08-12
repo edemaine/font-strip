@@ -86,9 +86,9 @@ update = (setURL = true) ->
     lineEnc
   ).join ''
   parsed = parseEnc enc, false
+  document.getElementById('aspectRatio')?.innerHTML = parsed.width / parsed.height
   showUnfolded unfolded, parsed
   showFolded folded, foldStrip parsed
-
   bbox = unfolded.viewbox()
   unfolded.width "#{unfoldedHeight * bbox.width / bbox.height}px"
 
