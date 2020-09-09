@@ -26,15 +26,6 @@ TODO:
 folded = unfolded = null
 unfoldedHeight = 50  ## px
 
-## Based on jolly.exe's code from http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
-getParameterByName = (name) ->
-  name = name.replace /[\[]/g, "\\["
-             .replace /[\]]/g, "\\]"
-  regex = new RegExp "[\\?&]#{name}=([^&#]*)"
-  results = regex.exec location.search
-  return null unless results?
-  decodeURIComponent results[1].replace /\+/g, " "
-
 checkboxes = ['mirror']
 loadState = ->
   for checkbox in checkboxes

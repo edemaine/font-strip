@@ -339,6 +339,7 @@ window?.showFolded = showFolded
 window?.showUnfolded = showUnfolded
 window?.parseEnc = parseEnc
 window?.foldStrip = foldStrip
+window?.getParameterByName = getParameterByName
 
 #console.log reflectPoint
 #  x: 1
