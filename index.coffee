@@ -47,7 +47,9 @@ update = (setURL = true) ->
   old = params
 
   unfolded.clear()
+  unfolded.style = unfolded.element 'style'
   folded.clear()
+  folded.style = folded.element 'style'
   lines = []
   lines = params.text.split '\n'
   while lines.length > 0 and lines[0].length == 0
@@ -82,6 +84,10 @@ update = (setURL = true) ->
   showFolded folded, foldStrip parsed
   bbox = unfolded.viewbox()
   unfolded.width "#{unfoldedHeight * bbox.width / bbox.height}px"
+  updateStyle()
+
+updateStyle = ->
+  updateStyles [unfolded, folded]
 
 #updateCheckboxes = ->
 #  for checkbox in checkboxes
@@ -134,6 +140,8 @@ fontGui = ->
   for event in ['input', 'propertychange', 'click']
     for checkbox in checkboxes
       document.getElementById(checkbox).addEventListener event, updateSoon
+  document.getElementById('backlight')?.addEventListener 'input', updateStyle
+  document.getElementById('opacity')?.addEventListener 'input', updateStyle
 
   window.addEventListener 'popstate', loadState
   window.addEventListener 'resize', resize

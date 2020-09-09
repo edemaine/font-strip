@@ -9,7 +9,7 @@
       @media print {
         .noprint { display: none; }
       }
-      /*TD { text-align: center; }*/
+      TD { text-align: center; }
       TEXTAREA { vertical-align: middle; }
     </STYLE>
     <!--#include virtual="../../analytics.html"-->
@@ -30,9 +30,9 @@
           <TEXTAREA NAME="text" ID="text" ROWS=4 COLS=40></TEXTAREA>
         </TD>
         <TD>
-          <INPUT ID="mirror" TYPE="checkbox"/><LABEL FOR="mirror">Mirror successive lines of text
-          <P>
           1&nbsp;&times;&nbsp;<span id="aspectRatio">?</span> strip
+          <DIV STYLE="margin-bottom: 1ex"></DIV>
+          <INPUT ID="mirror" TYPE="checkbox"/><LABEL FOR="mirror">Mirror successive lines of text
 <!--
           Fold from:
           <BR>
@@ -41,6 +41,12 @@
           <INPUT ID="slit" TYPE="radio" NAME="font"/><LABEL FOR="font22euler">Slit square</LABEL>
         </TD>
 -->
+        <TD>
+          Paper opacity:<br>
+          <input id="opacity" type="range" min="0" max="100">
+          <br>
+          <input id="backlight" type="checkbox">
+          <label for="backlight">Backlight</label>
     </TABLE>
 
     <P>

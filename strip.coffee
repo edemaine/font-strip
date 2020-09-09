@@ -4,7 +4,8 @@ outerStroke =
   width: 0.2
   linejoin: 'round'
 paperFill =
-  'rgba(255,245,109,0.5)' #cmyk(0,0,70%,0)
+  'rgb(255,245,109)'
+  #'rgba(255,245,109,0.5)' #cmyk(0,0,70%,0)
   #'rgba(255,255,204,0.5)' #'#ffffcc'
 creaseStroke =
   color: 'purple'
@@ -281,6 +282,17 @@ getParameterByName = (name) ->
   else
     decodeURIComponent results[1].replace(/\+/g, " ")
 
+updateStyles = (svgs) ->
+  rules = []
+  rules.push "polygon { fill-opacity: #{document.getElementById('opacity')?.value ? 50}% }"
+  if document.getElementById('backlight')?.checked
+    rules.push 'polygon { mix-blend-mode: multiply }'
+  else
+    rules.push 'polygon { mix-blend-mode: normal }'
+  rules = rules.join '\n'
+  for svg in svgs when svg?
+    svg.style.words rules
+
 designer = ->
   lastcp = null
   unfold1 = SVG 'unfold1'
@@ -299,15 +311,22 @@ designer = ->
     font = decodeFont x: cp
     #console.log ':', cp, font
     unfold1.clear()
+    unfold1.style = unfold1.element 'style'
     fold1.clear()
+    fold1.style = unfold1.element 'style'
     showUnfolded unfold1, font[true]
     showFolded fold1, font[true]
     if unfold2?
       unfold2.clear()
+      unfold2.style = unfold2.element 'style'
       showUnfolded unfold2, font[false]
     if fold2?
       fold2.clear()
+      fold2.style = fold2.element 'style'
       showFolded fold2, font[false]
+  updateStyle = -> updateStyles [unfold1, unfold2, fold1, fold2]
+  document.getElementById('backlight')?.addEventListener 'input', updateStyle
+  document.getElementById('opacity')?.addEventListener 'input', updateStyle
   document.getElementById('cp').addEventListener 'input', update
   loadState = ->
     if getParameterByName 'cp'
@@ -316,6 +335,7 @@ designer = ->
     else
       document.getElementById('cp').value = ''
     update false
+    updateStyle()
   window.addEventListener 'popstate', loadState
   resize = ->
     gui = document.getElementById('gui')
@@ -340,6 +360,7 @@ window?.showUnfolded = showUnfolded
 window?.parseEnc = parseEnc
 window?.foldStrip = foldStrip
 window?.getParameterByName = getParameterByName
+window?.updateStyles = updateStyles
 
 #console.log reflectPoint
 #  x: 1
