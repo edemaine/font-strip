@@ -301,13 +301,17 @@ designer = ->
   fold2 = SVG 'fold2' if document.getElementById 'fold2'
   update = (setUrl = true) ->
     cp = document.getElementById('cp').value
-    return if cp == lastcp
+    opacity = document.getElementById('opacity')?.value ? 50
+    if setUrl
+      url = "#{document.location.pathname}?cp=#{cp.replace /[ ]/g, '_'}"
+      url += "&opacity=#{opacity}" if opacity != 50
+      url += '&backlight=1' if document.getElementById('backlight')?.checked
+      if cp != lastcp
+        history.pushState null, 'cp', url
+      else
+        history.replaceState null, 'style', url
+    return updateStyle() if cp == lastcp
     lastcp = cp
-    url = document.location.pathname + '?cp=' + cp.replace(/ /g, '_')
-    try
-      history.pushState null, 'cp', url if setUrl
-    catch SecurityError
-      console.warn "Security prevents pushState: #{url}"
     font = decodeFont x: cp
     #console.log ':', cp, font
     unfold1.clear()
@@ -324,9 +328,10 @@ designer = ->
       fold2.clear()
       fold2.style = fold2.element 'style'
       showFolded fold2, font[false]
+    updateStyle()
   updateStyle = -> updateStyles [unfold1, unfold2, fold1, fold2]
-  document.getElementById('backlight')?.addEventListener 'input', updateStyle
-  document.getElementById('opacity')?.addEventListener 'input', updateStyle
+  document.getElementById('backlight')?.addEventListener 'input', update
+  document.getElementById('opacity')?.addEventListener 'input', update
   document.getElementById('cp').addEventListener 'input', update
   loadState = ->
     if getParameterByName 'cp'
@@ -334,8 +339,9 @@ designer = ->
         .replace /_/g, ' '
     else
       document.getElementById('cp').value = ''
+    document.getElementById('opacity')?.value = parseInt getParameterByName('opacity') ? 50
+    document.getElementById('backlight')?.checked = getParameterByName 'backlight'
     update false
-    updateStyle()
   window.addEventListener 'popstate', loadState
   resize = ->
     gui = document.getElementById('gui')

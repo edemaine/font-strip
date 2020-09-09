@@ -32,6 +32,8 @@ loadState = ->
     document.getElementById(checkbox).checked = getParameterByName checkbox
   text = getParameterByName('text') ? 'text'
   document.getElementById('text').value = text
+  document.getElementById('opacity')?.value = parseInt getParameterByName('opacity') ? 50
+  document.getElementById('backlight')?.checked = getParameterByName 'backlight'
   update false
 
 old = {}
@@ -42,8 +44,9 @@ update = (setURL = true) ->
   for checkbox in checkboxes
     params[checkbox] = document.getElementById(checkbox).checked
   #updateCheckboxes()
-  return if (true for key of params when params[key] != old[key]).length == 0
-  setUrl params if setURL
+  unchanged = (true for key of params when params[key] != old[key]).length == 0
+  setUrl params, unchanged if setURL
+  return updateStyle() if unchanged
   old = params
 
   unfolded.clear()
@@ -100,7 +103,7 @@ updateStyle = ->
 #    else
 #      svg.removeClass checkbox
 
-setUrl = (params) ->
+setUrl = (params, replace = true) ->
   encoded =
     for key, value of params
       if value == true
@@ -108,8 +111,14 @@ setUrl = (params) ->
       else if value == false
         continue
       "#{key}=#{encodeURIComponent(value).replace /%20/g, '+'}"
-  history.pushState null, 'text',
-    "#{document.location.pathname}?#{encoded.join '&'}"
+  url = "#{document.location.pathname}?#{encoded.join '&'}"
+  opacity = document.getElementById('opacity')?.value ? 50
+  url += "&opacity=#{opacity}" if opacity != 50
+  url += '&backlight=1' if document.getElementById('backlight')?.checked
+  if replace
+    history.replaceState null, 'style', url
+  else
+    history.pushState null, 'text', url
 
 ## Based on meouw's answer on http://stackoverflow.com/questions/442404/retrieve-the-position-x-y-of-an-html-element
 getOffset = (el) ->
@@ -140,8 +149,8 @@ fontGui = ->
   for event in ['input', 'propertychange', 'click']
     for checkbox in checkboxes
       document.getElementById(checkbox).addEventListener event, updateSoon
-  document.getElementById('backlight')?.addEventListener 'input', updateStyle
-  document.getElementById('opacity')?.addEventListener 'input', updateStyle
+  document.getElementById('backlight')?.addEventListener 'input', updateSoon
+  document.getElementById('opacity')?.addEventListener 'input', updateSoon
 
   window.addEventListener 'popstate', loadState
   window.addEventListener 'resize', resize
