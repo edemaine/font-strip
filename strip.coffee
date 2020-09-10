@@ -368,6 +368,7 @@ window?.foldStrip = foldStrip
 window?.getParameterByName = getParameterByName
 window?.updateStyles = updateStyles
 window?.creaseStroke = creaseStroke
+window?.gridStroke = gridStroke
 
 #console.log reflectPoint
 #  x: 1

@@ -163,23 +163,54 @@ fontGui = ->
       """<A HREF="design.html?cp=#{window.fontEnc[char]}">#{char.replace /start/, ' (start)'}</A>"""
   ).join ", "
 
+  cleanup = (svg) -> svg.replace /\sid="[^"]*"/g, ''
   download = (svg, filename) ->
     document.getElementById('download').href = URL.createObjectURL \
       new Blob [svg], type: "image/svg+xml"
     document.getElementById('download').download = filename
     document.getElementById('download').click()
   document.getElementById('downloadCP')?.addEventListener 'click', ->
-    download unfolded.svg(), 'strip-unfolded.svg'
-  document.getElementById('downloadSim')?.addEventListener 'click', ->
+    download cleanup(unfolded.svg()), 'strip-unfolded.svg'
+  document.getElementById('downloadFolded')?.addEventListener 'click', ->
+    download cleanup(folded.svg()), 'strip-folded.svg'
+  simulateSVG = ->
     parity = true
-    download (unfolded.svg().replace ///#{creaseStroke.color}///g, ->
+    cleanup(unfolded.svg())
+    .replace ///#{creaseStroke.color}///g, ->
       parity = not parity
       if parity
         '#f00'
       else
         '#00f'
-    ), 'strip-simulate.svg'
-  document.getElementById('downloadFolded')?.addEventListener 'click', ->
-    download folded.svg(), 'strip-folded.svg'
+    .replace ///<line[^<>/]*#{gridStroke.color}[^<>/]*(/>|>\s*</line>)///g, ''
+    .replace ///<rect[^<>/]*fill="[r#][^<>/]*(/>|>\s*</rect>)///, ''
+  document.getElementById('downloadSim')?.addEventListener 'click', ->
+    download simulateSVG(), 'strip-simulate.svg'
+
+  ## Origami Simulator
+  simulator = null
+  ready = false
+  onReady = null
+  checkReady = ->
+    if ready
+      onReady?()
+      onReady = null
+  window.addEventListener 'message', (e) ->
+    if e.data and e.data.from == 'OrigamiSimulator' and e.data.status == 'ready'
+      ready = true
+      checkReady()
+  document.getElementById('simulate')?.addEventListener 'click', ->
+    if simulator? and not simulator.closed
+      simulator.focus()
+    else
+      ready = false
+      simulator = window.open 'OrigamiSimulator/?model=', 'simulator'
+    svg = simulateSVG()
+    onReady = -> simulator.postMessage
+      op: 'importSVG'
+      svg: svg
+      vertTol: 0.1
+      filename: 'strip-simulate.svg'
+    checkReady()
 
 window?.onload = fontGui
