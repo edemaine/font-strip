@@ -102,7 +102,7 @@ parseEnc = (s, continuous) ->
   s = s.replace /@/, ''
   ## Two immediate vertical folds do nothing together, and don't want to draw
   ## them.  Useful to say |~|, so an initial fold if beginning, nothing else.
-  s = s.replace /||/g, ''
+  s = s.replace /\|\|/g, ''
 
   x = 0
   creases = [
