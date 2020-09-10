@@ -301,10 +301,10 @@ designer = ->
   fold2 = SVG 'fold2' if document.getElementById 'fold2'
   update = (setUrl = true) ->
     cp = document.getElementById('cp').value
-    opacity = document.getElementById('opacity')?.value ? 50
+    opacity = document.getElementById('opacity')?.value ? '50'
     if setUrl
       url = "#{document.location.pathname}?cp=#{cp.replace /[ ]/g, '_'}"
-      url += "&opacity=#{opacity}" if opacity != 50
+      url += "&opacity=#{opacity}" unless opacity == '50'
       url += '&backlight=1' if document.getElementById('backlight')?.checked
       if cp != lastcp
         history.pushState null, 'cp', url

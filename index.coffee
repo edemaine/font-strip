@@ -112,8 +112,8 @@ setUrl = (params, replace = true) ->
         continue
       "#{key}=#{encodeURIComponent(value).replace /%20/g, '+'}"
   url = "#{document.location.pathname}?#{encoded.join '&'}"
-  opacity = document.getElementById('opacity')?.value ? 50
-  url += "&opacity=#{opacity}" if opacity != 50
+  opacity = document.getElementById('opacity')?.value ? '50'
+  url += "&opacity=#{opacity}" unless opacity == '50'
   url += '&backlight=1' if document.getElementById('backlight')?.checked
   if replace
     history.replaceState null, 'style', url
