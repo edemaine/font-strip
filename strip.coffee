@@ -99,7 +99,7 @@ parseEnc = (s, continuous) ->
   while s.length > 0 and s[0] == '@'
     rotate += 1
     s = s[1..]
-  s = s.replace /@/, ''
+  s = s.replace /@/g, ''
   ## Two immediate vertical folds do nothing together, and don't want to draw
   ## them.  Useful to say |~|, so an initial fold if beginning, nothing else.
   s = s.replace /\|\|/g, ''
