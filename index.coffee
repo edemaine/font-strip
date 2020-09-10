@@ -163,4 +163,23 @@ fontGui = ->
       """<A HREF="design.html?cp=#{window.fontEnc[char]}">#{char.replace /start/, ' (start)'}</A>"""
   ).join ", "
 
+  download = (svg, filename) ->
+    document.getElementById('download').href = URL.createObjectURL \
+      new Blob [svg], type: "image/svg+xml"
+    document.getElementById('download').download = filename
+    document.getElementById('download').click()
+  document.getElementById('downloadCP')?.addEventListener 'click', ->
+    download unfolded.svg(), 'strip-unfolded.svg'
+  document.getElementById('downloadSim')?.addEventListener 'click', ->
+    parity = true
+    download (unfolded.svg().replace ///#{creaseStroke.color}///g, ->
+      parity = not parity
+      if parity
+        '#f00'
+      else
+        '#00f'
+    ), 'strip-simulate.svg'
+  document.getElementById('downloadFolded')?.addEventListener 'click', ->
+    download folded.svg(), 'strip-folded.svg'
+
 window?.onload = fontGui

@@ -367,6 +367,7 @@ window?.parseEnc = parseEnc
 window?.foldStrip = foldStrip
 window?.getParameterByName = getParameterByName
 window?.updateStyles = updateStyles
+window?.creaseStroke = creaseStroke
 
 #console.log reflectPoint
 #  x: 1
