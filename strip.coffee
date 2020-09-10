@@ -350,6 +350,15 @@ designer = ->
   resize()
   loadState()
 
+  document.getElementById('downloadCP')?.addEventListener 'click', ->
+    download cleanupSVG(unfold1.svg()), 'strip-unfolded.svg'
+  document.getElementById('downloadFolded')?.addEventListener 'click', ->
+    download cleanupSVG(fold1.svg()), 'strip-folded.svg'
+  document.getElementById('downloadSim')?.addEventListener 'click', ->
+    download simulateSVG(unfold1), 'strip-simulate.svg'
+  document.getElementById('simulate')?.addEventListener 'click', ->
+    simulate simulateSVG unfold1
+
 window?.onload = ->
   if document.getElementById 'cp'
     designer()
@@ -360,6 +369,50 @@ window?.onload = ->
     showUnfolded SVG('surface'), font[false]
     showFolded SVG('surface'), font[false]
 
+cleanupSVG = (svg) -> svg.replace /\sid="[^"]*"/g, ''
+simulateSVG = (svg) ->
+  parity = true
+  cleanupSVG(svg.svg())
+  .replace ///#{creaseStroke.color}///g, ->
+    parity = not parity
+    if parity
+      '#f00'
+    else
+      '#00f'
+  .replace ///<line[^<>/]*#{gridStroke.color}[^<>/]*(/>|>\s*</line>)///g, ''
+  .replace ///<rect[^<>/]*fill="[r#][^<>/]*(/>|>\s*</rect>)///, ''
+
+download = (svg, filename) ->
+  document.getElementById('download').href = URL.createObjectURL \
+    new Blob [svg], type: "image/svg+xml"
+  document.getElementById('download').download = filename
+  document.getElementById('download').click()
+
+## Origami Simulator
+simulator = null
+ready = false
+onReady = null
+checkReady = ->
+  if ready
+    onReady?()
+    onReady = null
+window.addEventListener 'message', (e) ->
+  if e.data and e.data.from == 'OrigamiSimulator' and e.data.status == 'ready'
+    ready = true
+    checkReady()
+simulate = (svg) ->
+  if simulator? and not simulator.closed
+    simulator.focus()
+  else
+    ready = false
+    simulator = window.open 'OrigamiSimulator/?model=', 'simulator'
+  onReady = -> simulator.postMessage
+    op: 'importSVG'
+    svg: svg
+    vertTol: 0.1
+    filename: 'strip-simulate.svg'
+  checkReady()
+
 window?.fontEnc = fontEnc
 window?.showFolded = showFolded
 window?.showUnfolded = showUnfolded
@@ -369,6 +422,10 @@ window?.getParameterByName = getParameterByName
 window?.updateStyles = updateStyles
 window?.creaseStroke = creaseStroke
 window?.gridStroke = gridStroke
+window?.cleanupSVG = cleanupSVG
+window?.simulateSVG = simulateSVG
+window?.download = download
+window?.simulate = simulate
 
 #console.log reflectPoint
 #  x: 1
