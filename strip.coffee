@@ -313,6 +313,8 @@ designer = ->
     return updateStyle() if cp == lastcp
     lastcp = cp
     font = decodeFont x: cp
+    document.getElementById('aspectRatioWith')?.innerHTML = font.true.x.width / font.true.x.height
+    document.getElementById('aspectRatioWithout')?.innerHTML = font.false.x.width / font.false.x.height
     #console.log ':', cp, font
     unfold1.clear()
     unfold1.style = unfold1.element 'style'
