@@ -413,6 +413,7 @@ simulate = (svg) ->
     svg: svg
     vertTol: 0.1
     filename: 'strip-simulate.svg'
+  , '*'
   checkReady()
 
 window?.fontEnc = fontEnc
