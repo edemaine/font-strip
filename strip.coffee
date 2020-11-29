@@ -3,8 +3,8 @@ outerStroke =
   color: 'black'
   width: 0.2
   linejoin: 'round'
-paperFill =
-  'rgb(255,245,109)'
+paperFill = (a) ->
+  "rgba(255,245,109,#{a})"
   #'rgba(255,245,109,0.5)' #cmyk(0,0,70%,0)
   #'rgba(255,255,204,0.5)' #'#ffffcc'
 creaseStroke =
@@ -236,7 +236,7 @@ showUnfolded = (svg, font) ->
     g.translate 0, y
 
     g.rect letter.width, letter.height
-    .fill paperFill
+    .addClass 'paper'
 
     for x in [1...letter.width]
       if x % 2 == 0
@@ -262,7 +262,7 @@ showFolded = (svg, font) ->
       poly = ([point.x, point.y] for point in polygon)
       g.polygon poly
       .stroke outerStroke
-      .fill paperFill
+      .addClass 'paper'
     bbox = g.bbox()
     g.translate x - bbox.x, y - bbox.y
     x += bbox.width + 2
@@ -284,11 +284,14 @@ getParameterByName = (name) ->
 
 updateStyles = (svgs) ->
   rules = []
-  rules.push "polygon { fill-opacity: #{document.getElementById('opacity')?.value ? 50}% }"
+  ## Thanks to Una Kravets for pointing out that mix-blend-mode:multiply
+  ## works better with alpha values than with fill-opacity.
+  #rules.push ".paper { fill-opacity: #{document.getElementById('opacity')?.value ? 50}% }"
+  rules.push ".paper { fill: #{paperFill "#{document.getElementById('opacity')?.value ? 50}%"} }"
   if document.getElementById('backlight')?.checked
-    rules.push 'polygon { mix-blend-mode: multiply }'
+    rules.push '.paper { mix-blend-mode: multiply }'
   else
-    rules.push 'polygon { mix-blend-mode: normal }'
+    rules.push '.paper { mix-blend-mode: normal }'
   rules = rules.join '\n'
   for svg in svgs when svg?
     svg.style.words rules
