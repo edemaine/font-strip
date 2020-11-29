@@ -407,7 +407,8 @@ simulate = (svg) ->
     simulator.focus()
   else
     ready = false
-    simulator = window.open 'OrigamiSimulator/?model=', 'simulator'
+    #simulator = window.open 'OrigamiSimulator/?model=', 'simulator'
+    simulator = window.open 'https://origamisimulator.org/?model=', 'simulator'
   onReady = -> simulator.postMessage
     op: 'importSVG'
     svg: svg
