@@ -237,6 +237,7 @@ showUnfolded = (svg, font) ->
 
     g.rect letter.width, letter.height
     .addClass 'paper'
+    .stroke 'rgba(0,0,0,0)' # avoid 'stroke: none' warning in Origami Simulator
 
     for x in [1...letter.width]
       if x % 2 == 0
