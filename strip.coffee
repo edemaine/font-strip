@@ -299,10 +299,10 @@ updateStyles = (svgs) ->
 
 designer = ->
   lastcp = null
-  unfold1 = SVG 'unfold1'
-  unfold2 = SVG 'unfold2' if document.getElementById 'unfold2'
-  fold1 = SVG 'fold1'
-  fold2 = SVG 'fold2' if document.getElementById 'fold2'
+  unfold1 = SVG().addTo '#unfold1'
+  unfold2 = SVG().addTo '#unfold2' if document.getElementById 'unfold2'
+  fold1 = SVG().addTo '#fold1'
+  fold2 = SVG().addTo '#fold2' if document.getElementById 'fold2'
   update = (setUrl = true) ->
     cp = document.getElementById('cp').value
     opacity = document.getElementById('opacity')?.value ? '50'
@@ -370,10 +370,10 @@ window?.onload = ->
     designer()
   else
     font = decodeFont fontEnc
-    showUnfolded SVG('surface'), font[true]
-    showFolded SVG('surface'), font[true]
-    showUnfolded SVG('surface'), font[false]
-    showFolded SVG('surface'), font[false]
+    showUnfolded SVG().addTo('#surface'), font[true]
+    showFolded SVG().addTo('#surface'), font[true]
+    showUnfolded SVG().addTo('#surface'), font[false]
+    showFolded SVG().addTo('#surface'), font[false]
 
 cleanupSVG = (svg) -> svg.replace /\sid="[^"]*"/g, ''
 simulateSVG = (svg) ->

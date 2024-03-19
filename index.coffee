@@ -136,9 +136,9 @@ resize = ->
   document.getElementById('folded').style.height = "#{height}px"
 
 fontGui = ->
-  unfolded = SVG 'unfolded'
+  unfolded = SVG().addTo '#unfolded'
   unfolded.height "#{unfoldedHeight}px"
-  folded = SVG 'folded'
+  folded = SVG().addTo '#folded'
   #loadFont()
 
   updateSoon = (event) ->

@@ -1,0 +1,101 @@
+doctype html
+html
+  head
+    title Strip Folding Designer
+    script(type="text/javascript", src="node_modules/@svgdotjs/svg.js/dist/svg.min.js")
+    script(type="text/javascript", src="strip.js")
+    style
+      :stylus
+        .hud-false > body > *:not(#gui), #hud, #download
+          display: none
+
+        @media print
+          .noprint
+            display: none
+
+        svg
+          width: 100%
+          height: 100%
+        .w-50
+          width: 50%
+        .w-100
+          width: 100%
+        .h-50
+          height: 50%
+        .text-left
+          text-align: left
+        .text-center
+          text-align: center
+        .text-right
+          text-align: right
+        .align-middle
+          vertical-align: middle
+        .float-left
+          float: left
+    //#include virtual="../../analytics.html"
+  body
+    table.w-100
+      tr
+        td.text-left.align-middle
+          h1
+            a(href="./") Strip Folding Designer
+        td.text-right.align-middle
+          h2 by <a href="https://erikdemaine.org/">Erik Demaine</a> and <a href="https://martindemaine.org">Martin Demaine</a>, 2016
+
+    table
+      td(style="font-size: x-large")
+        label(for="cp")
+          b Enter code for strip crease pattern:
+        br
+        textarea#cp(rows=2, cols=80)
+      td(style="padding-left: 2em")
+        | <code>|</code> for perpendicular folds
+        br
+        | <code>/</code> and <code>\</code> for diagonal folds which occupy one square
+        br
+        | <code>&nbsp;</code> for a blank square
+        br
+        | <code>!</code> for a half square
+        br
+        | <code>~</code> to separate start/middle/end
+      td
+        | Paper opacity:
+        br
+        input#opacity(type="range", min=0, max=100)
+        br
+        input#backlight(type="checkbox")
+        label(for="backlight") Backlight
+
+    p
+
+    table.w-100#gui
+      tr
+        td#unfold1.w-50.h-50
+        td#unfold2.w-50.h-50
+      tr
+        td#fold1.w-50.h-50
+        td#fold2.w-50.h-50
+      tr
+        td.text-center
+          | 1&nbsp;&times;&nbsp;
+          span#aspectRatioWith ?
+          |  <i>with connectors</i>
+        td.text-center
+          | 1&nbsp;&times;&nbsp;
+          span#aspectRatioWithout ?
+          |  <i>without connectors</i>
+
+    .text-right.noprint
+      button#simulate.float-left Simulate in Origami Simulator
+      | Download SVG: 
+      button#downloadCP Crease Pattern
+      button#downloadSim Crease Pattern for Origami Simulator
+      button#downloadFolded Folded Form
+      a#download
+
+    hr
+
+    p.
+      Check out <A HREF="http://erikdemaine.org/fonts/">other mathematical and
+      puzzle fonts</A>. &bull; Feedback or not working?
+      <A HREF="mailto:edemaine+fonts@mit.edu">Email Erik</A>.

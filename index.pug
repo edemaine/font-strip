@@ -1,0 +1,131 @@
+doctype html
+html
+  head
+    title Strip Folding Font
+    script(type="text/javascript", src="node_modules/@svgdotjs/svg.js/dist/svg.min.js")
+    script(type="text/javascript", src="strip.js")
+    script(type="text/javascript", src="index.js")
+    style
+      :stylus
+        .hud-false > body > *:not(#unfolded, #folded), #hud, #download
+          display: none
+
+        @media print
+          .noprint
+            display: none
+
+        #folded > svg
+          width: 100%
+          height: 100%
+        .w-100
+          width: 100%
+        .text-left
+          text-align: left
+        .text-right
+          text-align: right
+        .align-middle
+          vertical-align: middle
+        .float-left
+          float: left
+        .overflow-x-scroll
+          overflow-x: scroll
+    //#include virtual="../../analytics.html"
+  body
+    table.w-100
+      tr
+        td.text-left.align-middle
+          h1
+            a(href="./") Strip Folding Font
+        td.text-right.align-middle
+          h2 by <a href="https://erikdemaine.org/">Erik Demaine</a> and <a href="https://martindemaine.org">Martin Demaine</a>, 2017
+
+    table#data.w-100.noprint
+      tr
+        td
+          label(for="text") Enter text to render: &nbsp;
+          textarea#text(rows=4, cols=40)
+        td
+          | 1&nbsp;&times;&nbsp;
+          span#aspectRatio ?
+          |  strip
+          div(style="margin-bottom: 1ex")
+          input#mirror(type="checkbox")
+          label(for="mirror") Mirror successive lines of text
+        //-
+          | Fold from:
+          br
+          input#strip(type="radio", name="font")
+          label(for="long") Long strip
+          br
+          input#slit(type="radio", name="font"/>
+          label(for="slit") Slit square
+        td
+          | Paper opacity:
+          br
+          input#opacity(type="range", min=0, max=100)
+          br
+          input#backlight(type="checkbox")
+          label(for="backlight") Backlight
+
+    p
+
+    #unfolded.w-100.overflow-x-scroll
+
+    #folded.w-100
+
+    .text-right.noprint
+      button#simulate.float-left Simulate in Origami Simulator
+      | Download SVG: 
+      button#downloadCP Crease Pattern
+      button#downloadSim Crease Pattern for Origami Simulator
+      button#downloadFolded Folded Form
+      a#download
+
+    hr.noprint
+
+    p.noprint.
+      These fonts are inspired by our theorem with Nadia Benbernou and Anna Lubiw
+      that a unit-width strip of paper can fold <b>universally into any grid
+      polyhedron</b> (made up of unit cubes) using grid-aligned orthogonal and
+      diagonal creases.
+      To design the font, we folded each letter of the alphabet from a strip
+      with grid-aligned orthogonal and diagonal folds, in such a way that the
+      letters can be chained together so that entire texts can be folded
+      from a single strip.
+      The theorem and font are described in our paper,
+      &ldquo;<a href="https://erikdemaine.org/papers/StripsGrid_WADS2017/">Universal
+      Hinge Patterns for Folding Strips Efficiently into Any Grid Polyhedron</a>&rdquo;.
+
+    p.noprint.
+      The unfolded strip with crease pattern (shown on top, with scrollbar)
+      serves as a <b>puzzle font</b>.  Simply fold the crease pattern to
+      discover the secret message!  The folded form (shown on bottom)
+      is the readable form of the font.
+      Be sure to try <b>multiple lines of text</b>!
+      Then, for fun, you can turn on <b>Mirror successive lines of text</b>
+      (which is actually a more &ldquo;natural&rdquo; form of the font).
+
+    p.noprint.
+      These fonts were designed using our custom
+      <b><a href="design.html">Strip Folding Designer</a></b> webapp.
+      Try making your own letters!
+      (Or use the <a href="simple.html">simplified designer</a>
+      which does not distinguish letters from chain connections.)
+      You can play with our font designs here:
+      &bull;
+      <span id="fontLinks"></span>
+
+    p.noprint.
+      Related fonts include
+      <a href="http://www.peterpuzzle.com/">Peter Grabarchuk</a>'s
+      <a href="http://www.ageofpuzzles.com/Puzzles/OrigamiStripAlphabet/OrigamiStripAlphabet.htm">Origami Strip Alphabet</a>
+      (presented as a puzzle without solutions),
+      Julie Ferrieux's <a href="https://www.behance.net/gallery/13661733/Abcdaire-deon">pleated strip folding font</a>,
+      <a href="http://making.digital/">makingDigital</a>'s <a href="http://www.dafont.com/origami-making.font">origami making font</a>,
+      why.h's <a href="http://whyh7.blogspot.com/2010/04/font-design-strip-folding.html">strip folding font</a>.
+
+    p.noprint.
+      Check out <a href="https://erikdemaine.org/fonts/">other mathematical and
+      puzzle fonts</a>. &bull; Feedback or not working?
+      <a href="mailto:edemaine+fonts@mit.edu">Email Erik</a>. &bull;
+      <a href="https://github.com/edemaine/font-tetris">Source code on GitHub</a>.
