@@ -295,7 +295,10 @@ updateStyles = (svgs) ->
     rules.push '.paper { mix-blend-mode: normal }'
   rules = rules.join '\n'
   for svg in svgs when svg?
-    svg.style.words rules
+    unless svg.styleTag?.node.parentNode?
+      svg.styleTag = undefined
+    svg.styleTag ?= svg.element 'style'
+    svg.styleTag.words rules
 
 designer = ->
   lastcp = null
@@ -321,18 +324,14 @@ designer = ->
     document.getElementById('aspectRatioWithout')?.innerHTML = font.false.x.width / font.false.x.height
     #console.log ':', cp, font
     unfold1.clear()
-    unfold1.style = unfold1.element 'style'
     fold1.clear()
-    fold1.style = unfold1.element 'style'
     showUnfolded unfold1, font[true]
     showFolded fold1, font[true]
     if unfold2?
       unfold2.clear()
-      unfold2.style = unfold2.element 'style'
       showUnfolded unfold2, font[false]
     if fold2?
       fold2.clear()
-      fold2.style = fold2.element 'style'
       showFolded fold2, font[false]
     updateStyle()
   updateStyle = -> updateStyles [unfold1, unfold2, fold1, fold2]
@@ -370,10 +369,14 @@ window?.onload = ->
     designer()
   else
     font = decodeFont fontEnc
-    showUnfolded SVG().addTo('#surface'), font[true]
-    showFolded SVG().addTo('#surface'), font[true]
-    showUnfolded SVG().addTo('#surface'), font[false]
-    showFolded SVG().addTo('#surface'), font[false]
+    makeSVG = =>
+      svg = SVG().addTo '#surface'
+      updateStyles [svg]
+      svg
+    showUnfolded makeSVG(), font[true]
+    showFolded makeSVG(), font[true]
+    showUnfolded makeSVG(), font[false]
+    showFolded makeSVG(), font[false]
 
 cleanupSVG = (svg) -> svg.replace /\sid="[^"]*"/g, ''
 simulateSVG = (svg) ->

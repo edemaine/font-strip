@@ -50,9 +50,7 @@ update = (setURL = true) ->
   old = params
 
   unfolded.clear()
-  unfolded.style = unfolded.element 'style'
   folded.clear()
-  folded.style = folded.element 'style'
   lines = []
   lines = params.text.split '\n'
   while lines.length > 0 and lines[0].length == 0
