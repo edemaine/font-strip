@@ -15,7 +15,7 @@ exports.pug = pug = ->
 
 ## npm run coffee / npx gulp coffee: builds index.js from index.coffee etc.
 exports.coffee = coffee = ->
-  gulp.src ['index.coffee', 'strip.coffee'], ignore: 'gulpfile.coffee'
+  gulp.src ['*.coffee'], ignore: 'gulpfile.coffee'
   .pipe gulpCoffee()
   .pipe gulpChmod 0o644
   .pipe gulp.dest './'
@@ -27,7 +27,7 @@ exports.build = build = gulp.series pug, coffee
 exports.watch = watch = ->
   gulp.watch '*.pug', ignoreInitial: false, pug
   gulp.watch '*.styl', pug
-  gulp.watch ['index.coffee', 'strip.coffee'],
+  gulp.watch ['*.coffee'],
     ignoreInitial: false
   , coffee
 
