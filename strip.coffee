@@ -311,7 +311,7 @@ simulateSVG = (svg) ->
     else
       '#00f'
   .replace ///<line[^<>/]*#{gridStroke.color}[^<>/]*(/>|>\s*</line>)///g, ''
-  .replace ///<rect[^<>/]*fill="[r#][^<>/]*(/>|>\s*</rect>)///, ''
+  .replace ///<rect[^<>/]*class="paper[^<>/]*(/>|>\s*</rect>)///, ''
 
 download = (svg, filename) ->
   document.getElementById('download').href = URL.createObjectURL \
