@@ -3,6 +3,7 @@ html
   head
     title Strip Folding Designer
     script(type="text/javascript", src="node_modules/@svgdotjs/svg.js/dist/svg.min.js")
+    script(type="text/javascript", src="node_modules/furls/furls.js")
     script(type="text/javascript", src="strip.js")
     script(type="text/javascript", src="design.js")
     style
@@ -62,7 +63,7 @@ html
       td
         | Paper opacity:
         br
-        input#opacity(type="range", min=0, max=100)
+        input#opacity(type="range", min=0, max=100, value=50)
         br
         input#backlight(type="checkbox")
         label(for="backlight") Backlight

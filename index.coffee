@@ -26,33 +26,14 @@ TODO:
 folded = unfolded = null
 unfoldedHeight = 50  ## px
 
-checkboxes = ['mirror']
-loadState = ->
-  for checkbox in checkboxes
-    document.getElementById(checkbox).checked = getParameterByName checkbox
-  text = getParameterByName('text') ? 'text'
-  document.getElementById('text').value = text
-  document.getElementById('opacity')?.value = parseInt getParameterByName('opacity') ? 50
-  document.getElementById('backlight')?.checked = getParameterByName 'backlight'
-  update false
-
-old = {}
-update = (setURL = true) ->
-  params = {}
-  params.text = document.getElementById('text').value
-    .replace(/\r\n/g, '\r').replace(/\r/g, '\n')
-  for checkbox in checkboxes
-    params[checkbox] = document.getElementById(checkbox).checked
-  #updateCheckboxes()
-  unchanged = (true for key of params when params[key] != old[key]).length == 0
-  setUrl params, unchanged if setURL
-  return updateStyle() if unchanged
-  old = params
+update = (changed) ->
+  return updateStyle() unless changed.text or changed.mirror
+  state = @getState()
 
   unfolded.clear()
   folded.clear()
   lines = []
-  lines = params.text.split '\n'
+  lines = state.text.split '\n'
   while lines.length > 0 and lines[0].length == 0
     lines.shift()
   while lines.length > 0 and lines[lines.length-1].length == 0
@@ -68,7 +49,7 @@ update = (setURL = true) ->
         continue
     ).join ''
     if row % 2 == 1
-      if params.mirror
+      if state.mirror
         lineEnc = "#_#{lineEnc}#"
       else
         lineEnc = lineEnc.split('').reverse().join('')
@@ -90,34 +71,6 @@ update = (setURL = true) ->
 updateStyle = ->
   updateStyles [unfolded, folded]
 
-#updateCheckboxes = ->
-#  for checkbox in checkboxes
-#    checked = document.getElementById(checkbox).checked
-#    if negated[checkbox]
-#      checked = not checked
-#      checkbox = "no#{checkbox}"
-#    if checked
-#      svg.addClass checkbox
-#    else
-#      svg.removeClass checkbox
-
-setUrl = (params, replace = true) ->
-  encoded =
-    for key, value of params
-      if value == true
-        value = '1'
-      else if value == false
-        continue
-      "#{key}=#{encodeURIComponent(value).replace /%20/g, '+'}"
-  url = "#{document.location.pathname}?#{encoded.join '&'}"
-  opacity = document.getElementById('opacity')?.value ? '50'
-  url += "&opacity=#{opacity}" unless opacity == '50'
-  url += '&backlight=1' if document.getElementById('backlight')?.checked
-  if replace
-    history.replaceState null, 'style', url
-  else
-    history.pushState null, 'text', url
-
 ## Based on meouw's answer on http://stackoverflow.com/questions/442404/retrieve-the-position-x-y-of-an-html-element
 getOffset = (el) ->
   x = y = 0
@@ -133,26 +86,19 @@ resize = ->
   height = Math.max 100, window.innerHeight - offset.y
   document.getElementById('folded').style.height = "#{height}px"
 
-fontGui = ->
+window?.onload = ->
   unfolded = SVG().addTo '#unfolded'
   unfolded.height "#{unfoldedHeight}px"
   folded = SVG().addTo '#folded'
   #loadFont()
 
-  updateSoon = (event) ->
-    setTimeout update, 0
-    true
-  for event in ['input', 'propertychange', 'keyup']
-    document.getElementById('text').addEventListener event, updateSoon
-  for event in ['input', 'propertychange', 'click']
-    for checkbox in checkboxes
-      document.getElementById(checkbox).addEventListener event, updateSoon
-  document.getElementById('backlight')?.addEventListener 'input', updateSoon
-  document.getElementById('opacity')?.addEventListener 'input', updateSoon
+  furls = new Furls()
+  .addInputs()
+  .on 'stateChange', update
+  .syncState()
+  #.syncClass()
 
-  window.addEventListener 'popstate', loadState
   window.addEventListener 'resize', resize
-  loadState()
   resize()
 
   document.getElementById("fontLinks").innerHTML = (
@@ -161,13 +107,4 @@ fontGui = ->
       """<A HREF="design.html?cp=#{window.fontEnc[char]}">#{char.replace /start/, ' (start)'}</A>"""
   ).join ", "
 
-  document.getElementById('downloadCP')?.addEventListener 'click', ->
-    download cleanupSVG(unfolded.svg()), 'strip-unfolded.svg'
-  document.getElementById('downloadFolded')?.addEventListener 'click', ->
-    download cleanupSVG(folded.svg()), 'strip-folded.svg'
-  document.getElementById('downloadSim')?.addEventListener 'click', ->
-    download simulateSVG(unfolded), 'strip-simulate.svg'
-  document.getElementById('simulate')?.addEventListener 'click', ->
-    simulate simulateSVG unfolded
-
-window?.onload = fontGui
+  downloadButtons unfolded, folded

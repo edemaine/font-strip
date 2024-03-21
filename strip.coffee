@@ -319,6 +319,16 @@ download = (svg, filename) ->
   document.getElementById('download').download = filename
   document.getElementById('download').click()
 
+downloadButtons = (unfolded, folded) ->
+  document.getElementById('downloadCP')?.addEventListener 'click', ->
+    download cleanupSVG(unfolded.svg()), 'strip-unfolded.svg'
+  document.getElementById('downloadFolded')?.addEventListener 'click', ->
+    download cleanupSVG(folded.svg()), 'strip-folded.svg'
+  document.getElementById('downloadSim')?.addEventListener 'click', ->
+    download simulateSVG(unfolded), 'strip-simulate.svg'
+  document.getElementById('simulate')?.addEventListener 'click', ->
+    simulate simulateSVG unfolded
+
 ## Origami Simulator
 simulator = null
 ready = false
@@ -359,6 +369,7 @@ window?.gridStroke = gridStroke
 window?.cleanupSVG = cleanupSVG
 window?.simulateSVG = simulateSVG
 window?.download = download
+window?.downloadButtons = downloadButtons
 window?.simulate = simulate
 
 #console.log reflectPoint
