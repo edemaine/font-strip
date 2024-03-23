@@ -61,9 +61,13 @@ html
         br
         | <code>~</code> to separate start/middle/end
       td
-        | Paper opacity:
+        label(for="shadow") Shadow:
         br
-        input#opacity(type="range", min=0, max=100, value=50)
+        input#shadow(type="range", min=0, max=100, value=50)
+        br
+        label(for="opacity") Paper opacity:
+        br
+        input#opacity(type="range", min=0, max=100, value=100)
         br
         input#backlight(type="checkbox")
         label(for="backlight") Backlight

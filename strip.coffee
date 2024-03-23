@@ -1,4 +1,4 @@
-margin = 0.2
+margin = 0.5
 outerStroke =
   color: 'black'
   width: 0.2
@@ -293,6 +293,9 @@ updateStyles = (svgs) ->
     rules.push '.paper { mix-blend-mode: multiply }'
   else
     rules.push '.paper { mix-blend-mode: normal }'
+  if shadow = document.getElementById('shadow')?.valueAsNumber
+    r = 255/100 * (100 - shadow)
+    rules.push ".paper { filter: drop-shadow(0px 0px 0.3px rgb(#{r} #{r} #{r})) }"
   rules = rules.join '\n'
   for svg in svgs when svg?
     unless svg.styleTag?.node.parentNode?

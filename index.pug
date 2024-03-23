@@ -61,9 +61,13 @@ html
           input#slit(type="radio", name="font"/>
           label(for="slit") Slit square
         td
-          | Paper opacity:
+          label(for="shadow") Shadow:
           br
-          input#opacity(type="range", min=0, max=100, value=50)
+          input#shadow(type="range", min=0, max=100, value=50)
+          br
+          label(for="opacity") Paper opacity:
+          br
+          input#opacity(type="range", min=0, max=100, value=100)
           br
           input#backlight(type="checkbox")
           label(for="backlight") Backlight
@@ -105,6 +109,15 @@ html
       Be sure to try <b>multiple lines of text</b>!
       Then, for fun, you can turn on <b>Mirror successive lines of text</b>
       (which is actually a more &ldquo;natural&rdquo; form of the font).
+
+    p.noprint.
+      You can also play with the lighting of the paper.
+      By default, you see fully opaque paper with medium drop shadows.
+      You can adjust the shadow darkness for a more dramatic effect.
+      Or you can turn off the shadows and turn down the paper opacity,
+      for a more transparent look.
+      Turn on the backlight to simulate a bright light from behind the paper,
+      highlighting the deviation in layers.
 
     p.noprint.
       These fonts were designed using our custom
