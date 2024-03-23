@@ -64,7 +64,7 @@ update = (changed) ->
   if state.left
     index = enc.indexOf '~'
     index++ while enc[index+1] == '@'
-    enc = "#{enc[..index]}#|#{enc[index+1..]}"
+    enc = "#{enc[..index]}#{if state.mirror then '' else '#'}|#{enc[index+1..]}"
   parsed = parseEnc enc, false
   document.getElementById('aspectRatio')?.innerHTML = parsed.width / parsed.height
   showUnfolded unfolded, parsed
