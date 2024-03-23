@@ -27,7 +27,7 @@ folded = unfolded = null
 unfoldedHeight = 50  ## px
 
 update = (changed) ->
-  return updateStyle() unless changed.text or changed.mirror
+  return updateStyle() unless changed.text or changed.left or changed.mirror
   state = @getState()
 
   unfolded.clear()
@@ -38,28 +38,33 @@ update = (changed) ->
     lines.shift()
   while lines.length > 0 and lines[lines.length-1].length == 0
     lines.pop()
+  parity = Number state.left
   enc = (for line, row in lines
     lineEnc = (for char, col in line
       char = char.toUpperCase()
       if char of fontEnc
-        if row == col == 0 and "#{char}start" of fontEnc
+        if row == col == 0 and "#{char}start" of fontEnc and not state.left
           char = "#{char}start"
         fontEnc[char].replace /^[ _]/, ''
       else
         continue
     ).join ''
-    if row % 2 == 1
+    if row % 2 == 1 - parity
       if state.mirror
         lineEnc = "#_#{lineEnc}#"
       else
         lineEnc = lineEnc.split('').reverse().join('')
     if row < lines.length - 1
-      if row % 2 == 0
+      if row % 2 == parity
         lineEnc += '\\_____/'
       else
         lineEnc += '_/_____\\_'
     lineEnc
   ).join ''
+  if state.left
+    index = enc.indexOf '~'
+    index++ while enc[index+1] == '@'
+    enc = "#{enc[..index]}#|#{enc[index+1..]}"
   parsed = parseEnc enc, false
   document.getElementById('aspectRatio')?.innerHTML = parsed.width / parsed.height
   showUnfolded unfolded, parsed
