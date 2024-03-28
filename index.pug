@@ -8,28 +8,50 @@ html
     script(type="text/javascript", src="index.js")
     style
       :stylus
-        .hud-false > body > *:not(#unfolded, #folded), #hud, #download
+        .hud-false > body > *:not(#strip, #square, #folded), #hud, #download
           display: none
 
         @media print
           .noprint
             display: none
 
-        #folded > svg
-          width: 100%
-          height: 100%
         .w-100
           width: 100%
+        .h-100
+          height: 100%
         .text-left
           text-align: left
         .text-right
           text-align: right
-        .align-middle
+        .align-middle, textarea
           vertical-align: middle
         .float-left
           float: left
         .overflow-x-scroll
-          overflow-x: scroll
+
+        #output
+          display: flex
+          > div
+            min-width: 10px
+            min-height: 10px
+        #folded
+          flex: 1 1
+          > svg
+            width: 100%
+            height: 100%
+        :root.paper-square
+          #unfolded
+            flex: 1 1
+            > svg
+              width: 100%
+              height: 100%
+        :root.paper-strip
+          #output
+            flex-direction: column
+          #unfolded
+            box-sizing: border-box
+            height: fit-content
+            overflow-x: scroll
     //#include virtual="../../analytics.html"
   body
     table.w-100
@@ -46,23 +68,24 @@ html
           label(for="text") Enter text to render: &nbsp;
           textarea#text(rows=4, cols=40) text
         td
-          | 1&nbsp;&times;&nbsp;
-          span#aspectRatio ?
-          |  strip
+          label
+            input(type="radio", name="paper", value="strip", checked)
+            | 1&nbsp;&times;&nbsp;
+            span#aspectRatio ?
+            |  strip
+          br
+          label
+            input(type="radio", name="paper", value="square")
+            span#squareDim1 ?
+            | &nbsp;&times;&nbsp;
+            span#squareDim2 ?
+            |  square
           div(style="margin-bottom: 1ex")
           input#left(type="checkbox")
           label(for="left") Leftward first line
           br
           input#mirror(type="checkbox")
           label(for="mirror") Mirror successive lines of text
-        //-
-          | Fold from:
-          br
-          input#strip(type="radio", name="font")
-          label(for="long") Long strip
-          br
-          input#slit(type="radio", name="font"/>
-          label(for="slit") Slit square
         td
           label(for="shadow") Shadow:
           br
@@ -77,9 +100,10 @@ html
 
     p
 
-    #unfolded.w-100.overflow-x-scroll
 
-    #folded.w-100
+    #output.w-100
+      #unfolded
+      #folded
 
     .text-right.noprint
       button#simulate.float-left Simulate in Origami Simulator

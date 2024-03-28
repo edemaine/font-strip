@@ -257,6 +257,124 @@ showUnfolded = (svg, font) ->
     y += 3
   autobox svg
 
+showUnfoldedSquare = (svg, font) ->
+  y = 0
+  for letter in fontLetters font
+    square = letter.height * Math.ceil 1 + Math.sqrt letter.width / letter.height - 1
+    g = svg.group()
+    g.translate 0, y
+
+    g.rect square, square
+    .addClass 'paper'
+    .stroke 'rgba(0,0,0,0)' # avoid 'stroke: none' warning in Origami Simulator
+
+    for x in [1...square]
+      if x % 2 == 0
+        g.line x, 0, x, square
+        .stroke gridStroke
+    for y in [1...square]
+      if y % 2 == 0
+        if y % 4 == 0
+          g.line 0, y, letter.height, y
+          .stroke gridStroke
+          g.line letter.height, y, square, y
+          .stroke outerStroke
+        else
+          g.line square - letter.height, y, square, y
+          .stroke gridStroke
+          g.line 0, y, square - letter.height, y
+          .stroke outerStroke
+
+    yOffset = 0
+    xOffset = 0
+    flip = (x) =>
+      if yOffset % 4 == 2
+        square - x
+      else
+        x
+    drawCrease = (x1, y1, x2, y2) =>
+      if yOffset % 4 == 2
+        x1 = square - x1
+        x2 = square - x2
+        [y1, y2] = [y2, y1]
+      g.line x1, y1, x2, y2
+      .stroke creaseStroke
+    afterTurn = null
+    creases = letter.creases[..]
+    if (lastCrease = creases.at -1)
+      x = Math.max lastCrease.xt, lastCrease.xb
+      ## Last crease is generally a vertical.
+      if lastCrease.xt == lastCrease.xb
+        prevCrease = creases.at -2
+      else
+        prevCrease = lastCrease
+      diag = 0
+      if prevCrease?.xt == x
+        diag = 1
+      else if prevCrease?.xb == x
+        diag = -1
+      total = 2 * (square/2 * (square/2 - 2) + 2)
+      while x < total
+        if diag == 1
+          creases.push {xt: x, xb: x+2}
+        else if diag == -1
+          creases.push {xt: x+2, xb: x}
+        x += 2
+        break unless x < total
+        creases.push {xt: x, xb: x}
+        diag = -diag
+    for crease in creases
+      limit = if yOffset in [0, square-2] then square-2 else square-4
+      {xt, xb} = crease
+      xt += xOffset
+      xb += xOffset
+      while xt > limit or xb > limit
+        ## Crease just beyond limit. Mirror it into the wraparound pixels.
+        if xt == limit
+          drawCrease square-2, yOffset, square, yOffset+2
+          afterTurn = =>
+            drawCrease square-2, yOffset+4, square, yOffset+2
+        else if xb == limit
+          drawCrease square, yOffset, square-2, yOffset+2
+          afterTurn = =>
+            drawCrease square, yOffset+4, square-2, yOffset+2
+        #drawCrease square-2, yOffset, square-2, yOffset+2
+        drawCrease square-2, yOffset+2, square, yOffset+2
+        afterTurn?()
+        afterTurn = null
+        drawCrease square-2, yOffset+2, square-2, yOffset+4
+        xOffset -= limit
+        xt -= limit
+        xb -= limit
+        yOffset += 2
+        limit = if yOffset in [0, square-2] then square-2 else square-4
+      if yOffset
+        xt += 2
+        xb += 2
+        limit += 2
+      {yt, yb} = letter
+      yt += yOffset
+      yb += yOffset
+      ## Crease just reaches limit. This is actually on previous pixel,
+      ## not wraparound pixel, so we don't need to mirror it.
+      #if yOffset < square-2
+      #  if xt == limit and xb != limit
+      #    drawCrease square-2, yOffset, square, yOffset+2
+      #    afterTurn = =>
+      #      drawCrease square-2, yOffset+4, square, yOffset+2
+      #  else if xt != limit and xb == limit
+      #    drawCrease square, yOffset, square-2, yOffset+2
+      #    afterTurn = =>
+      #      drawCrease square, yOffset+4, square-2, yOffset+2
+      drawCrease xt, yt, xb, yb
+
+    g.rect square, square
+    .stroke outerStroke
+    .fill 'none'
+
+    y += square + 1
+  autobox svg
+
 showFolded = (svg, font) ->
   i = x = y = 0
   for letter in fontLetters font
@@ -315,6 +433,8 @@ simulateSVG = (svg) ->
       '#f00'
     else
       '#00f'
+  .replace ///(<line[^<>/]*)#{outerStroke.color}///g, "$1#0f0"
+  #.replace ///(<line[^<>/]*)#{gridStroke.color}///g, "$1#ff0"
   .replace ///<line[^<>/]*#{gridStroke.color}[^<>/]*(/>|>\s*</line>)///g, ''
   .replace ///<rect[^<>/]*class="paper[^<>/]*(/>|>\s*</rect>)///, ''
 
@@ -364,6 +484,7 @@ simulate = (svg) ->
 window?.fontEnc = fontEnc
 window?.showFolded = showFolded
 window?.showUnfolded = showUnfolded
+window?.showUnfoldedSquare = showUnfoldedSquare
 window?.parseEnc = parseEnc
 window?.decodeFont = decodeFont
 window?.foldStrip = foldStrip

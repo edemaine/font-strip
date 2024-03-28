@@ -1,11 +1,5 @@
 ###
 TODO:
-* Fold superlong strip from a slit square of paper
-  * Spiral or zig-zag options
-  * Need to compose turn gadgets (to straighten out strip) with other folds
-    (which I think might lead to crossing folds)
-  * Ideally able to specify a segment (prefix or suffix) that's folded,
-    and rest is unfolded (e.g. slash in text? HELLO/WORLD)
 * Cut out of rectangle of paper like http://whyh7.blogspot.com/2010/04/font-design-strip-folding.html
   * Vertical strips seem best
   * Easy form is to attach the strip at the base, and just start off with a
@@ -24,10 +18,11 @@ TODO:
 #margin = 10
 
 folded = unfolded = null
-unfoldedHeight = 50  ## px
+stripHeight = 50  ## px
 
 update = (changed) ->
-  return updateStyle() unless changed.text or changed.left or changed.mirror
+  return updateStyle() unless changed.text or changed.left or changed.mirror or changed.paper
+  resize()
   state = @getState()
 
   unfolded.clear()
@@ -66,11 +61,24 @@ update = (changed) ->
     index++ while enc[index+1] == '@'
     enc = "#{enc[..index]}#{if state.mirror then '' else '#'}|#{enc[index+1..]}"
   parsed = parseEnc enc, false
-  document.getElementById('aspectRatio')?.innerHTML = parsed.width / parsed.height
-  showUnfolded unfolded, parsed
+  document.getElementById('aspectRatio')?.innerHTML = aspectRatio =
+    parsed.width / parsed.height
+  document.getElementById('squareDim1')?.innerHTML =
+  document.getElementById('squareDim2')?.innerHTML =
+    Math.ceil 1 + Math.sqrt aspectRatio - 1
+  switch state.paper
+    when 'strip'
+      showUnfolded unfolded, parsed
+    when 'square'
+      showUnfoldedSquare unfolded, parsed
   showFolded folded, foldStrip parsed
   bbox = unfolded.viewbox()
-  unfolded.width "#{unfoldedHeight * bbox.width / bbox.height}px"
+  if state.paper == 'strip'
+    unfolded.width "#{stripHeight * bbox.width / bbox.height}px"
+    unfolded.height "#{stripHeight}px"
+  else
+    unfolded.width null
+    unfolded.height null
   updateStyle()
 
 updateStyle = ->
@@ -87,13 +95,12 @@ getOffset = (el) ->
   y: y
 
 resize = ->
-  offset = getOffset document.getElementById 'folded'
+  offset = getOffset document.getElementById 'output'
   height = Math.max 100, window.innerHeight - offset.y
-  document.getElementById('folded').style.height = "#{height}px"
+  document.getElementById('output').style.height = "#{height}px"
 
 window?.onload = ->
   unfolded = SVG().addTo '#unfolded'
-  unfolded.height "#{unfoldedHeight}px"
   folded = SVG().addTo '#folded'
   #loadFont()
 
@@ -101,7 +108,7 @@ window?.onload = ->
   .addInputs()
   .on 'stateChange', update
   .syncState()
-  #.syncClass()
+  .syncClass()
 
   window.addEventListener 'resize', resize
   resize()
