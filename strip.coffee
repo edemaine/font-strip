@@ -247,6 +247,7 @@ showUnfolded = (svg, font) ->
         .stroke gridStroke
 
     for crease in letter.creases
+      continue if crease.xt == crease.xb and crease.xt in [0, letter.width]
       g.line crease.xt, letter.yt, crease.xb, letter.yb
       .stroke creaseStroke
 
@@ -324,6 +325,7 @@ showUnfoldedSquare = (svg, font) ->
         creases.push {xt: x, xb: x}
         diag = -diag
     for crease in creases
+      continue if crease.xt == crease.xb and crease.xt in [0, letter.width]
       limit = if yOffset in [0, square-2] then square-2 else square-4
       {xt, xb} = crease
       xt += xOffset
