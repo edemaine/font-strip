@@ -325,7 +325,7 @@ showUnfoldedSquare = (svg, font) ->
         creases.push {xt: x, xb: x}
         diag = -diag
     for crease in creases
-      continue if crease.xt == crease.xb and crease.xt in [0, letter.width]
+      continue if 0 == crease.xt == crease.xb
       limit = if yOffset in [0, square-2] then square-2 else square-4
       {xt, xb} = crease
       xt += xOffset
@@ -368,6 +368,7 @@ showUnfoldedSquare = (svg, font) ->
       #    drawCrease square, yOffset, square-2, yOffset+2
       #    afterTurn = =>
       #      drawCrease square, yOffset+4, square-2, yOffset+2
+      continue if xt == xb == square
       drawCrease xt, yt, xb, yb
 
     g.rect square, square
