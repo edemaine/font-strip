@@ -1,74 +1,41 @@
-<!DOCTYPE html>
-<HTML>
-  <HEAD>
-    <TITLE>Strip Folding Designer</TITLE>
-    <SCRIPT TYPE="text/javascript" src="../../js/svg.min.js"></SCRIPT>
-    <SCRIPT TYPE="text/javascript" src="strip.js"></SCRIPT>
-    <STYLE TYPE="text/css">
-      @media print {
-        .noprint { display: none; }
-      }
-      /*TD { text-align: center; }*/
-      TEXTAREA { vertical-align: middle; }
-      CODE { background: #80ff80; }
-    </STYLE>
-    <!--#include virtual="../../analytics.html"-->
-  </HEAD>
-  <BODY>
-    <TABLE WIDTH="100%">
-      <TR>
-        <TD STYLE="text-align: left; vertical-align: middle;">
-          <H1><A HREF="./">Strip Folding Designer</A></H1>
-        <TD STYLE="text-align: right; vertical-align: middle;">
-          <H2>by <A HREF="http://erikdemaine.org/">Erik&nbsp;Demaine</A> and <A HREF="http://martindemaine.org">Martin&nbsp;Demaine</A>, 2016</H2>
-    </TABLE>
-
-    <TABLE>
-      <TD STYLE="font-size: x-large">
-        <B><LABEL FOR="cp">Enter code for strip crease pattern:</LABEL></B>
-        <BR>
-        <TEXTAREA NAME="cp" ID="cp" ROWS=2 COLS=80></TEXTAREA>
-        <BR>
-        1&nbsp;&times;&nbsp;<span id="aspectRatioWith">?</span> strip
-      <TD STYLE="padding-left: 2em">
-        <CODE>|</CODE> for perpendicular folds <BR>
-        <CODE>/</CODE> and <CODE>\</CODE> for diagonal folds which occupy one square <BR>
-        <CODE>&nbsp;</CODE> for a blank square <BR>
-        <CODE>!</CODE> for a half square <BR>
-        <!--<CODE>~</CODE> to separate start/middle/end-->
-      <TD STYLE="padding-left: 1em; text-align: center">
-        Paper opacity:<br>
-        <input id="opacity" type="range" min="0" max="100">
-        <br>
-        <input id="backlight" type="checkbox">
-        <label for="backlight">Backlight</label>
-    </TABLE>
-
-    <P>
-
-    <TABLE STYLE="width: 100%" ID="gui">
-      <TR>
-        <TD id="unfold1" STYLE="width: 100%; height: 50%">
-        </TD>
-      <TR>
-        <TD id="fold1" STYLE="width: 100%; height: 50%">
-        </TD>
-    </TABLE>
-
-    <DIV STYLE="text-align: right" CLASS="noprint">
-      <BUTTON ID="simulate" STYLE="float: left">Simulate in Origami Simulator</BUTTON>
-      Download SVG:
-      <BUTTON ID="downloadCP">Crease Pattern</BUTTON>
-      <BUTTON ID="downloadSim">Crease Pattern for Origami Simulator</BUTTON>
-      <BUTTON ID="downloadFolded">Folded Form</BUTTON>
-      <A ID="download" STYLE="display: none"></A>
-    </DIV>
-
-    <HR>
-
-    <P>
-    Check out <A HREF="http://erikdemaine.org/fonts/">other mathematical and
-    puzzle fonts</A>. &bull; Feedback or not working?
-    <A HREF="mailto:edemaine+fonts@mit.edu">Email Erik</A>.
-  </BODY>
-</HTML>
+<!DOCTYPE html><html><head><title>Strip Folding Designer</title><script type="text/javascript" src="node_modules/@svgdotjs/svg.js/dist/svg.min.js"></script><script type="text/javascript" src="node_modules/furls/furls.js"></script><script type="text/javascript" src="strip.js"></script><script type="text/javascript" src="design.js"></script><style>.hud-false > body > *:not(#gui),
+#hud,
+#download {
+  display: none;
+}
+@media print {
+  .noprint {
+    display: none;
+  }
+}
+svg {
+  width: 100%;
+  height: 100%;
+}
+.w-50 {
+  width: 50%;
+}
+.w-100 {
+  width: 100%;
+}
+.h-50 {
+  height: 50%;
+}
+.text-left {
+  text-align: left;
+}
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
+.align-middle {
+  vertical-align: middle;
+}
+.float-left {
+  float: left;
+}
+</style><!--#include virtual="../../analytics.html"--></head><body><table class="w-100"><tr><td class="text-left align-middle"><h1><a href="./">Strip Folding Designer</a></h1></td><td class="text-right align-middle"><h2>by <a href="https://erikdemaine.org/">Erik Demaine</a> and <a href="https://martindemaine.org">Martin Demaine</a>, 2016</h2></td></tr></table><table><td style="font-size: x-large"><label for="cp"><b>Enter code for strip crease pattern:</b></label><br><textarea id="cp" rows="2" cols="80"></textarea></td><td style="padding-left: 2em"><code>|</code> for perpendicular folds<br><code>/</code> and <code>\</code> for diagonal folds which occupy one square<br><code>&nbsp;</code> for a blank square<br><code>!</code> for a half square<br></td><td><label for="shadow">Shadow:</label><br><input id="shadow" type="range" min="0" max="100" value="50"><br><label for="opacity">Paper opacity:</label><br><input id="opacity" type="range" min="0" max="100" value="100"><br><input id="backlight" type="checkbox"><label for="backlight">Backlight</label></td></table><p></p><table class="w-100" id="gui"><tr><td class="w-50 h-50" id="unfold1"></td></tr><tr><td class="w-50 h-50" id="fold1"></td></tr></table><div class="text-right noprint"><button class="float-left" id="simulate">Simulate in Origami Simulator</button>Download SVG: <button id="downloadCP">Crease Pattern</button><button id="downloadSim">Crease Pattern for Origami Simulator</button><button id="downloadFolded">Folded Form</button><a id="download"></a></div><hr><p>Check out <A HREF="http://erikdemaine.org/fonts/">other mathematical and
+puzzle fonts</A>. &bull; Feedback or not working?
+<A HREF="mailto:edemaine+fonts@mit.edu">Email Erik</A>.</p></body></html>
